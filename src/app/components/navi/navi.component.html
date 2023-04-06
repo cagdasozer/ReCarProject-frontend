@@ -1,0 +1,63 @@
+<nav
+  class="navbar navbar-expand-lg sticky-top navbar-transparent"
+  (scroll)="onWindowScroll()"
+>
+  <div class="container">
+    <a class="navbar-brand" href="#">ÖZER RENT</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Anasayfa <span></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/cars">Araçlar</a>
+        </li>
+        <li class="nav-item">
+          <app-cart-summary></app-cart-summary>
+        </li>
+      </ul>
+        <ul *ngIf="!isAuthenticated()" type="button" class="navbar-nav mr-right">
+            <li class="navbar-nav mr-right">
+              <a class="navbar-brand text-success" href="/login">Giriş</a>
+            </li>
+            <li class="navbar-nav mr-right">
+              <a class="navbar-brand text-danger" href="/register">Kayıt ol</a>
+            </li>
+        </ul>
+        <ul *ngIf="isAuthenticated()" class="navbar-nav mr-right">
+          <li class="nav-item">
+            <a *ngIf="dataLoaded" class="navbar-brand text-black" href="/admin"
+              >Admin</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              *ngIf="dataLoaded"
+              class="navbar-brand text-black"
+              href="/profile"
+            >
+              {{ user.firstName }} {{ user.lastName }}</a
+            >
+          </li>
+          <li class="nav-item">
+            <a (click)="logout()" class="navbar-brand text-black" href=""
+              >Çıkış Yap</a
+            >
+          </li>
+        </ul>
+    </div>
+  </div>
+</nav>
+<br />

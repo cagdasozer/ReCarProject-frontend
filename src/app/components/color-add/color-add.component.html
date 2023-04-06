@@ -1,0 +1,28 @@
+<div class="content">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="title">Renk Ekle</h5>
+        <div class="card-body">
+          <form [formGroup]="colorAddForm">
+            <div class="mb-3">
+              <label for="colorName">Renk yazınız.</label>
+              <div class="form-group">
+                <input
+                  type="text"
+                  id="colorName"
+                  class="form-control border-danger text-BLACK"
+                  placeholder="Renk ismi"
+                  formControlName="colorName"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button (click)="add()" class="btn btn-success w-100">Ekle</button>
+      </div>
+    </div>
+  </div>
+</div>
