@@ -1,8 +1,11 @@
 export class CreditCard {
-    cardNumber: string;
-    expireYear: string;
-    expireMonth: string;
-    cvc: string;
-    cardHolderFullName: string;
-    balance: number;
+    id:number
+    customerId:number
+    fullName:string
+    cardNumber:string
+    cardExpMonth:number
+    cardExpYear:number
+    cvv:number
+    cardType:string
+    cardLimit:number
 }

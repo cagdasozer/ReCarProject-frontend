@@ -1,89 +1,96 @@
-<div class="content">
+<div class="container" style="margin-top: 50px">
   <div class="col-md-12">
     <div class="card">
       <div class="card-header">
-        <h5 class="title">Araba Ekle</h5>
-        <div class="card-body">
-          <form [formGroup]="carAddForm">
-            <div class="mb-3">
-              <label for="brandId">Marka seçiniz.</label>
-              <div class="form-group">
-                <select
-                  class="form-select bg-danger border-danger text-white"
-                  formControlName="brandId"
-                >
-                  <option *ngFor="let brand of brands" [ngValue]="brand.id">
-                    {{ brand.brandName }}
-                  </option>
-                </select>
-              </div>
+        <h5>Yeni Araba Ekle!</h5>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="carAddForm">
+          <div class="mb-3">
+            <label for="brandId">Marka İsmi :</label>
+            <div class="form-group">
+              <select
+                class="form-select"
+                id="brandId"
+                formControlName="brandId"
+                aria-label="Default select example"
+              >
+                <option selected disabled>Marka ismi seçiniz</option>
+                <option *ngFor="let brand of brands" value="{{ brand.id }}">
+                  {{ brand.brandName }}
+                </option>
+              </select>
             </div>
-            <div class="mb-3">
-              <label for="colorId">Renk seçiniz.</label>
-              <div class="form-group">
-                <select
-                  class="form-select bg-danger border-danger text-white"
-                  formControlName="colorId"
-                >
-                  <option *ngFor="let color of colors" [ngValue]="color.id">
-                    {{ color.colorName }}
-                  </option>
-                </select>
-              </div>
+          </div>
+          <div class="mb-3">
+            <label for="colorId">Renk İsmi :</label>
+            <div class="form-group">
+              <select
+                class="form-select"
+                id="colorId"
+                formControlName="colorId"
+                aria-label="Default select example"
+              >
+                <option selected disabled>Renk ismi seçiniz</option>
+                <option *ngFor="let color of colors" value="{{ color.id }}">
+                  {{ color.colorName }}
+                </option>
+              </select>
             </div>
-            <div class="mb-3">
-              <label for="modelYear">Model yılı yazınız.</label>
-              <div class="form-group">
-                <input
-                  type="number"
-                  id="modelYear"
-                  class="form-control border-danger text-black"
-                  placeholder="Model Yılı"
-                  formControlName="modelYear"
-                />
-              </div>
+          </div>
+          <div class="mb-3">
+            <label for="carName">Araba İsmi :</label>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="carName"
+                id="carName"
+                placeholder="Araba ismini giriniz"
+              />
             </div>
-            <div class="mb-3">
-              <label for="carName">Araç adı Yazınız.</label>
-              <div class="form-group">
-                <input
-                  type="text"
-                  id="carName"
-                  class="form-control border-danger text-black"
-                  placeholder="Araç Adı"
-                  formControlName="carName"
-                />
-              </div>
+          </div>
+          <div class="mb-3">
+            <label for="modelYear">Model Yılı :</label>
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control"
+                formControlName="modelYear"
+                id="modelYear"
+                placeholder="Model yılını giriniz"
+              />
             </div>
-            <div class="mb-3">
-              <label for="dailyPrice">Günlük fiyat yazınız.</label>
-              <div class="form-group">
-                <input
-                  type="number"
-                  id="dailyPrice"
-                  class="form-control border-danger text-black"
-                  placeholder="Günlük Fiyat"
-                  formControlName="dailyPrice"
-                />
-              </div>
+          </div>
+          <div class="mb-3">
+            <label for="dailyPrice">Günlük Ücret :</label>
+            <div class="input-group">
+              <span class="input-group-text">₺</span>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="dailyPrice"
+                id="dailyPrice"
+                placeholder="Günlük ücretini giriniz"
+              />
+              <span class="input-group-text">.00</span>
             </div>
-            <div class="mb-3">
-              <label for="description">Açıklama yazınız.</label>
-              <div class="form-group">
-                <input
-                  type="text"
-                  id="description"
-                  class="form-control border-danger text-black"
-                  placeholder="Açıklama"
-                  formControlName="description"
-                />
-              </div>
+          </div>
+          <div class="mb-3">
+            <label for="description">Açıklama :</label>
+            <div class="input-group">
+              <textarea
+                id="description"
+                class="form-control"
+                formControlName="description"
+                rows="5"
+              ></textarea>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
       <div class="card-footer">
-        <button (click)="add()" class="btn btn-success w-100">Ekle</button>
+        <button class="btn btn-success" (click)="add()">Ekle</button>
       </div>
     </div>
   </div>

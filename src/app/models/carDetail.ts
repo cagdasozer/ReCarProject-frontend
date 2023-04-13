@@ -1,9 +1,12 @@
-export interface CarDetailDto{
+export interface CarDetail{
     id:number,
-    carName : string,
     brandName:string,
     colorName:string,
+    brandId:number,
+    colorId:number,
+    carName:string,
     modelYear:number,
     dailyPrice:number,
+    minFindeksScore:number,
     description:string
 }

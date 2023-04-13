@@ -1,113 +1,96 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { Brand } from 'src/app/models/brand';
 import { Car } from 'src/app/models/car';
-import { CarImage } from 'src/app/models/carImage';
-import { CarDetailDto } from 'src/app/models/cardetail-dto';
-import { Color } from 'src/app/models/color';
-import { BrandService } from 'src/app/services/brand.service';
-import { CarImageService } from 'src/app/services/car-image.service';
+import { CarDetail } from 'src/app/models/carDetail';
+import { CarFilter } from 'src/app/models/carFilter';
 import { CarService } from 'src/app/services/car.service';
+import { CarImageService } from 'src/app/services/car-image.service';
+import { ToastrService } from 'ngx-toastr';
 import { CartService } from 'src/app/services/cart.service';
-import { ColorService } from 'src/app/services/color.service';
 
 @Component({
   selector: 'app-car',
   templateUrl: './car.component.html',
-  styleUrls: ['./car.component.css']
+  styleUrls: ['./car.component.css'],
 })
 export class CarComponent implements OnInit {
+  imageUrl = 'https://localhost:7145/uploads/CarImages/';
 
-  imageUrl = "https://localhost:7145/uploads/CarImages/"
+  isDataLoaded = false;
+  filterText = '';
+  carFilter : [];
+  colorFilter: [];
+  brandFilter: [];
+  carDetails: CarDetail[] = [];
 
-  cars: CarDetailDto[] = [];
-  carImages: CarImage[] = [];
-  brands: Brand[] = [];
-  colors: Color[] = [];
-  filterText = "";
-  brandFilter: number = 0;
-  colorFilter: number = 0;
-  dataLoaded = false;
-  
-  constructor(private carService: CarService,
-    private activatedRoute:ActivatedRoute,
-    private brandService:BrandService,
-    private colorService:ColorService,
-    private carImagesService:CarImageService,
-    private cartService :CartService,
-    private toastrService : ToastrService) { }
+  constructor(
+    private carService: CarService,
+    private activatedRoute: ActivatedRoute,
+    private toastrService: ToastrService,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params=>{
-      if(params["brandId"]){
-        this.getCarsByBrand(params["brandId"])
-      } else if (params["colorId"]) {
-        this.getCarsByColor(params["colorId"])
+    this.activatedRoute.params.subscribe((params) => {
+      if (params['brandId'] && params['colorId']) {
+        this.getCarDetailsByFiltered(params['brandId'], params['colorId']);
+      } else if (params['brandId']) {
+        this.getCarDetailsByBrandId(params['brandId']);
+      } else if (params['colorId']) {
+        this.getCarDetailsByColorId(params['colorId']);
       } else {
-        this.getCars()
-        this.getBrands()
-        this.getColors()
-        this.getAllCarImages();
-      }
-    })
-  }
-
-  getCars() {
-    this.carService.getCars().subscribe(response=>{
-      this.cars = response.data;
-      this.dataLoaded = true;
-    });
-  }
-  getCarsByBrand(brandId:number) {
-    this.carService.getCarsByBrand(brandId).subscribe(response=>{
-      this.cars = response.data
-      this.dataLoaded = true;
-    })   
-  }
-
-  getAllCarImages(){
-    this.carImagesService.getAllCarImages().subscribe(response => {
-      this.carImages = response.data;
-    })
-  }
-
-  getCarImage(carId:number) {
-    let imageUrl: string;
-    this.carImages.forEach(carImage => {
-      if (carImage.carId == carId) {
-        imageUrl = "https://localhost:7145/uploads/CarImages/" + carImage.imagePath;
+        this.getCarDetails();
       }
     });
-    return imageUrl;
   }
-  
-  getCarsByColor(colorId:number) {
-    this.carService.getCarsByColor(colorId).subscribe(response=>{
-      this.cars = response.data
-      this.dataLoaded = true;
-    })   
-  }
-  getCarsByColorAndBrand(brandId:number, colorId:number){
-    this.carService.getCarsByColorAndBrand(brandId, colorId).subscribe(response=>{
-      this.cars = response.data
-      this.dataLoaded = true;
-    })
-  }
-  getBrands(){
-    this.brandService.getBrands().subscribe(response=>{
-      this.brands = response.data;
+
+  getCarDetails() {
+    return this.carService.getCarDetails().subscribe((response) => {
+      this.carDetails = response.data;
+      this.isDataLoaded = true;
     });
   }
-  getColors(){
-    this.colorService.getColors().subscribe(response=>{
-      this.colors = response.data;
-    });
+
+  getCarDetailsByBrandId(brandId: number) {
+    return this.carService
+      .getCarDetailsByBrandId(brandId)
+      .subscribe((response) => {
+        this.carDetails = response.data;
+        this.isDataLoaded = true;
+      });
+  }
+
+  getCarDetailsByColorId(colorId: number) {
+    return this.carService
+      .getCarDetailsByColorId(colorId)
+      .subscribe((response) => {
+        this.carDetails = response.data;
+        this.isDataLoaded = true;
+        console.log(response.data);
+      });
+  }
+
+  getCarDetailsByFiltered(brandId: number, colorId: number) {
+    let carFilter: CarFilter = {
+      brandId: parseInt(brandId.toString()),
+      colorId: parseInt(colorId.toString()),
+    };
+    return this.carService
+      .getCarDetailsByFiltered(carFilter)
+      .subscribe((response) => {
+        this.carDetails = response.data;
+        this.isDataLoaded = true;
+      });
   }
 
   addToCart(car: Car) {
-    this.toastrService.info('Firma ile iletişime geçiniz, ödeme yaptıktan sonra aracı teslim alabilirsiniz.');
-    this.toastrService.success( 'Araç Rezerve Edildi. ', car.brandName + " " +car.carName);
+    this.toastrService.info(
+      'Firma ile iletişime geçiniz, ödeme yaptıktan sonra aracı teslim alabilirsiniz.'
+    );
+    this.toastrService.success(
+      'Araç Rezerve Edildi. ',
+      car.brandName + ' ' + car.carName
+    );
     this.cartService.addToCart(car);
   }
 }

@@ -28,12 +28,15 @@ export class LoginGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-      if (this.authService.isAuthenticated()) {
-        return true;
-      } else {
-        this.router.navigate(['login']);
-        this.toastrService.info('Sisteme Giriş Yapınız');
-        return false;
-      }
+    if (this.authService.isAuthenticated()) {
+      return true;
+    } else {
+      this.toastrService.info(
+        'Sisteme giriş yapmalısınız!',
+        'İşlem başarısız!'
+      );
+      this.router.navigate(['login']);
+      return false;
+    }
   }
 }

@@ -1,27 +1,22 @@
-<form [formGroup]="addFormGroup" class="container">
-  <div class="row">
-      <div class="col-md-5">
-          <label for="rentDate"><h4>Kiralama Tarihi</h4></label>
-      </div>
-      <div class="col-md-5">
-          <label for="returnDate"><h4>Dönüş Tarihi</h4></label>
-      </div>
+<div *ngIf="isDataLoaded==false" class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
   </div>
-  <div class="row">
-      <div class="col-md-5">
-          <input type="text" id="rentDate" placeholder="Ay/Gün/Yıl"
-          class="form-control bg-danger" formControlName="rentDate"
-          bsDatepicker [(ngModel)]="rentDate"
-          [bsConfig]="{ isAnimated: true, containerClass: 'theme-blue' }">
-      </div>
-      <div class="col-md-5">
-          <input type="text" id="returnDate" placeholder="Ay/Gün/Yıl"
-          class="form-control bg-danger" formControlName="returnDate"
-          bsDatepicker [(ngModel)]="returnDate"
-          [bsConfig]="{ isAnimated: true, containerClass: 'theme-blue' }">
-      </div>
-      <div class="col-md-2">
-          <button (click)="checkRulesForAdding()" type="button" class="btn btn-primary" >Rezerve Et</button>
-      </div>
-  </div>
-</form>
+  <table *ngIf="isDataLoaded==true" class="table">
+      <thead>
+        <tr>
+          <th scope="col">Marka Adı</th>
+          <th scope="col">Müşteri İsim Soyisim</th>
+          <th scope="col">Kiralama Tarihi</th>
+          <th scope="col">Geri Dönüş Tarihi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rental of rentals">
+          <td>{{rental.brandName}}</td>
+          <td>{{rental.customerFullName}}</td>
+          <td>{{rental.rentDate}}</td>
+          <td>{{rental.returnDate}}</td>
+        </tr>
+      </tbody>
+    </table>
+  

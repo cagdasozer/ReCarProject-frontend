@@ -1,71 +1,175 @@
-<div *ngIf="dataLoaded==true" class="container py-4 my-4 mx-auto d-flex flex-column">
-  <div class="header">
-      <div class="row r1">
-          <div class="col-md-9 abc">
-              <h1>{{car.modelYear}} - {{ car.brandName }}</h1>
+<div *ngIf="isDataLoaded==false" class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  
+  <div class="container" >
+    <div class="row">
+      <div class="col-5">
+  
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="margin-top: 75px; margin-right: 100px; background-color:beige ; max-width: 300px; max-height: 300px;"> 
+          <div class="carousel-inner">
+            <div class="carousel-item" *ngFor="let carImage of carImages; let i = index"  [ngClass]="{'active': i === 1}">
+              <img src={{rootPath}}{{carImage.imagePath}} width="300px" height="300px"/>
+            </div>
           </div>
-          <div class="col-md-3 text-right pqr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-          <p class="text-right para">Araç Detayları Aşağıdadır</p>
-      </div>
-  </div>
-  <div class="container-body mt-4">
-      <div class="row r3">
-          <div class="col-md-5 p-5 klo">
-              <ul>
-                  <li>{{ car.carName }}</li>
-                  <li>{{ car.brandName }}</li>
-                  <li>{{ car.colorName }}</li>
-                  <li>{{ car.modelYear }}</li>
-                  <li>{{ car.dailyPrice | currency}}</li>
-                  <li>{{ car.description }}</li>
-              </ul>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+  
+        <div id="carouselExampleSlidesOnly" *ngIf="checkIsCarImageNull()" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="https://localhost:7145/uploads/CarImages/DefaultImage.jpg" width="300px" height="300px">
+            </div>
           </div>
-
-          <div id="carouselExampleControls" class="carousel slide col-md-6" data-bs-ride="carousel">
-              <div class="carousel-inner">
-                <div *ngFor="let carImage of carImages" [class]="getImagesClass(carImage)"> 
-                  <img class="d-block" [src]="getImagePath(carImage)"
-                  width="100%" style="min-height: 400px;"> 
-              </div>
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-              </button>
+        </div>
+        </div>
+      <div class="col-7">
+        <ul *ngIf="isDataLoaded" style="margin-top: 100px;" class="list-group list-group-flush">
+          <li class="list-group-item">Marka : {{carDetail.brandName}}</li>
+          <li class="list-group-item">Renk : {{carDetail.colorName}}</li>
+          <li class="list-group-item">Model : {{carDetail.carName}}</li>
+          <li class="list-group-item">Günlük Ücret : {{carDetail.dailyPrice}}</li>
+          <li class="list-group-item">Açıklama : {{carDetail.description}}</li>
+        </ul>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col">    
+    </div>
+    <div class="col">
+      <div class="button-group" style="float: right;">
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Güncelle
+      </button>
+    <button class="btn btn-danger" style="margin-left: 25px;" data-bs-toggle="modal" data-bs-target="#exampleModal2">Sil</button>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div style="max-width: 500px; margin: auto; margin-top: 50px;">
+    <h1 style="text-align: center;">Arabayı Kirala</h1>
+    <div style="margin-top: 20px;">
+      <label for="rentDate" class="form-label">Kiralama Tarihi</label>
+      <input type="date" [(ngModel)]="rentDate" [min]="lastRentalReturnDate" class="form-control" id="rentDate">
+    </div>
+    <div style="margin-top: 20px;">
+      <label for="returnDate" class="form-label">Teslim Etme Tarihi</label>
+      <input type="date" [(ngModel)]="returnDate" class="form-control" id="returnDate">
+    </div>
+  <button  type="button" style="margin-top: 20px;" (click)="rentCar(newRental)" class="btn btn-success">Kirala</button>
+  </div>
+  
+  
+  
+  
+  <!--Update Modal-->
+  <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Arabayı Güncelle</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="carUpdateForm">
+            <div class="mb-3">
+                <label for="brandId">Marka İsmi :</label>
+                <div class="form-group">
+                    <select class="form-select" id="brandId" formControlName="brandId"  aria-label="Default select example">
+                        <option *ngFor="let brand of brands" value={{brand.id}}>{{brand.brandName}}</option>
+                      </select>
+                </div>
             </div>
+            <div class="mb-3">
+                <label for="colorId">Renk İsmi :</label>
+                <div class="form-group">
+                    <select class="form-select" id="colorId" formControlName="colorId" aria-label="Default select example">
+                        <option *ngFor="let color of colors" value="{{color.id}}">{{color.colorName}}</option>
+                      </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="carName">Araba İsmi :</label>
+                <div class="form-group">
+                    <input 
+                    type="text"
+                    class="form-control" 
+                    formControlName="carName" 
+                    id="carName"
+                    placeholder="Araba ismini giriniz.">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="modelYear">Model Yılı :</label>
+                <div class="form-group">
+                    <input 
+                    type="number"
+                    class="form-control" 
+                    formControlName="modelYear" 
+                    id="modelYear"
+                    placeholder="Model yılını giriniz.">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="dailyPrice">Günlük Ücreti :</label>
+                <div class="input-group">
+                    <span class="input-group-text">₺</span>
+                    <input 
+                    type="number"
+                    class="form-control" 
+                    formControlName="dailyPrice" 
+                    id="dailyPrice"
+                    placeholder="Günlük ücreti giriniz.">
+                    <span class="input-group-text">.00</span>
+                </div>
+                
+            </div>
+            <div class="mb-3">
+                <label for="description">Açıklama :</label>
+                <div class="input-group">
+                    <textarea 
+                    id="description" 
+                    class="form-control"
+                    formControlName="description" 
+                    rows="5"
+                    placeholder="Açıklama giriniz."></textarea>
+                </div>
+            </div>
+        </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="setCarUpdateFormValues()" >İptal</button>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="updateCar()">Güncelle</button>
+        </div>
       </div>
+    </div>
   </div>
-  <div class="footer d-flex flex-column mt-5">
-    <form [formGroup]="addFormGroup" class="container">
-        <div class="row">
-            <div class="col-md-5">
-                <label for="rentDate"><h4>Kiralama Tarihi</h4></label>
-            </div>
-            <div class="col-md-5">
-                <label for="returnDate"><h4>Dönüş Tarihi</h4></label>
-            </div>
+  <!--Update Modal-->
+  
+  <!--Delete Modal-->
+  <div class="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Emin misiniz?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="row">
-            <div class="col-md-5">
-                <input type="text" id="rentDate" placeholder="Ay/Gün/Yıl"
-                class="form-control bg-danger" formControlName="rentDate"
-                bsDatepicker [(ngModel)]="rentDate"
-                [bsConfig]="{ isAnimated: true, containerClass: 'theme-blue' }">
-            </div>
-            <div class="col-md-5">
-                <input type="text" id="returnDate" placeholder="Ay/Gün/Yıl"
-                class="form-control bg-danger" formControlName="returnDate"
-                bsDatepicker [(ngModel)]="returnDate"
-                [bsConfig]="{ isAnimated: true, containerClass: 'theme-blue' }">
-            </div>
-            <div class="col-md-2">
-                <button (click)="addToCart()" type="button" class="btn btn-primary" >Rezerve Et</button>
-            </div>
+        <div class="modal-body">
+          Bu arabayı silmek istediğinize emin misiniz?
         </div>
-      </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">İptal</button>
+          <button type="button" class="btn btn-success" (click)="deleteCar()" data-bs-dismiss="modal" routerLink="/">Sil</button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+  <!--Delete Modal-->
+  

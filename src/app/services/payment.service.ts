@@ -13,8 +13,8 @@ export class PaymentService {
 
   constructor(private httpClient:HttpClient) { }
 
-  pay(payment:Payment):Observable<ResponseModel>{
-    let newUrl = this.apiUrl + "pay"
+  paAddPaymenty(payment:Payment):Observable<ResponseModel>{
+    let newUrl = this.apiUrl + "add"
     return this.httpClient.post<ResponseModel>(newUrl, payment);
   }
 }
